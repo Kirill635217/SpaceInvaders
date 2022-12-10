@@ -13,7 +13,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        CheckMoveDirection();
         transform.Translate(moveDirection.normalized * (speed * Time.deltaTime));
+    }
+
+    void CheckMoveDirection()
+    {
+        var nextPosition = transform.position + (Vector3)moveDirection.normalized * (speed * Time.deltaTime);
+        if(nextPosition.x > GameManager.Instance.BorderSize.x/2)
+            MoveRight(false);
+        if(nextPosition.x < -GameManager.Instance.BorderSize.x/2)
+            MoveLeft(false);
     }
 
     public void MoveDirection(Vector2 direction)
