@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -15,20 +16,26 @@ namespace Tests.PlayMode
             playerCannon.SetShootDirection(Vector2.up);
             yield return new WaitForSeconds(playerCannon.FireRate + playerCannon.FireRate / 2);
             Assert.AreEqual(2, Object.FindObjectsOfType<Bullet>().Length);
+            Object.Destroy(playerCannon);
+            foreach (var bullet in Object.FindObjectsOfType<Bullet>())
+                Object.Destroy(bullet);
         }
 
         [UnityTest]
         public IEnumerator ShootDirectionTest()
         {
             var playerCannon = new GameObject().AddComponent<PlayerCannon>();
-            var expectedPosition = new Vector2(0,
-                playerCannon.Force * Time.fixedUnscaledDeltaTime * playerCannon.FireRate / 2);
             playerCannon.SetBullet(Resources.Load<Bullet>("Bullet"));
             playerCannon.SetShootDirection(Vector2.up);
+            var expectedPosition = new Vector2(0,
+                playerCannon.Force * playerCannon.FireRate / 2);
             yield return new WaitForSeconds(playerCannon.FireRate / 2);
+            Debug.Log(Object.FindObjectsOfType<Bullet>().Length);
+            Debug.Log(Object.FindObjectOfType<Bullet>().transform.position);
+            Debug.Log(expectedPosition);
             Assert.AreEqual(true,
                 Mathf.Abs(Vector2.Distance(expectedPosition,
-                    Object.FindObjectOfType<Bullet>().transform.position)) < .1f);
+                    Object.FindObjectOfType<Bullet>().transform.position)) < .01f);
         }
     }
 }
