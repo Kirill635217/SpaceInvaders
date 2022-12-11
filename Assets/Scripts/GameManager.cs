@@ -64,7 +64,34 @@ public class GameManager : MonoBehaviour
         }
         foreach (var invader in invaders)
         {
-            rows.Add(new InvadersRow(invader, borderSize, startYPosition - spaceBetweenRows * rows.Count));
+            var row = new InvadersRow(invader, borderSize, startYPosition - spaceBetweenRows * rows.Count);
+            row.OnLeaderMoveDown += CheckRows;
+            rows.Add(row);
+        }
+    }
+
+    void CheckRows(InvadersRow owner, bool isRightLeader)
+    {
+        foreach (var row in rows)
+        {
+            row.MoveRowDown();
+            // switch (isRightLeader)
+            // {
+            //     case true:
+            //     {
+            //         var distance = Mathf.Abs(owner.LeadingRight.transform.position.x - row.LeadingRight.transform.position.x);
+            //         if(distance == 0)
+            //             row.MoveRowDown();
+            //         break;
+            //     }
+            //     case false:
+            //     {
+            //         var distance = Mathf.Abs(owner.LeadingLeft.transform.position.y - row.LeadingLeft.transform.position.y);
+            //         if(distance == 0)
+            //             row.MoveRowDown();
+            //         break;
+            //     }
+            // }
         }
     }
 

@@ -18,6 +18,7 @@ public class Invader : CharacterMovement
     public float UpdateTime => updateTime;
 
     public Action OnMoveDown;
+    public Action<Invader> OnDestroy;
 
     private void Awake()
     {
@@ -38,6 +39,17 @@ public class Invader : CharacterMovement
     {
         CheckMoveDirection();
         CheckTimer();
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.CompareTag("Bullet"))
+        {
+            OnDestroy?.Invoke(this);
+            Destroy(col.gameObject);
+            Destroy(gameObject, 1);
+            gameObject.SetActive(false);
+        }
     }
 
     void CheckTimer()

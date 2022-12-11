@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +7,11 @@ public class InvadersRow
 {
     private List<Invader> invaders = new();
 
-    public Invader LeadingRight => invaders[0];
-    public Invader LeadingLeft => invaders[^1];
+    private Invader leadingRight, leadingLeft;
+    public Invader LeadingRight => leadingRight;
+    public Invader LeadingLeft => leadingLeft;
+
+    public Action<InvadersRow, bool> OnLeaderMoveDown;
 
     public InvadersRow(Invader[] givenInvaders, Vector2 border)
     {
@@ -45,6 +49,18 @@ public class InvadersRow
         UpdateLeaders();
     }
 
+    void InvaderLost(Invader invader)
+    {
+        bool wasLeader = leadingLeft == invader || leadingRight == invader;
+        Debug.Log(wasLeader);
+        leadingLeft.OnMoveDown -= invader.MoveDown;
+        leadingRight.OnMoveDown -= invader.MoveDown;
+        invaders.Remove(invader);
+        Debug.Log(invaders.Contains(invader));
+        if (wasLeader)
+            UpdateLeaders();
+    }
+
     public void Start()
     {
         foreach (var invader in invaders)
@@ -55,21 +71,42 @@ public class InvadersRow
         }
     }
 
-    void UpdateLeaders()
+    public void MoveRowDown()
     {
         foreach (var invader in invaders)
         {
-            LeadingLeft.OnMoveDown += invader.MoveDown;
-            LeadingRight.OnMoveDown += invader.MoveDown;
+            invader.MoveDown();
         }
-        Start();
+    }
+
+    void UpdateLeaders()
+    {
+        Debug.Log("UpdateLeaders");
+        if(invaders.Count <= 0)
+            return;
+        if(leadingLeft == null && leadingRight == null)
+            Start();
+
+        if (leadingLeft == null)
+        {
+            leadingLeft = invaders[^1];
+            leadingLeft.OnMoveDown += () => OnLeaderMoveDown?.Invoke(this, false);
+        }
+
+        if (leadingRight == null)
+        {
+            leadingRight = invaders[0];
+            leadingRight.OnMoveDown += () => OnLeaderMoveDown?.Invoke(this, true);
+        }
     }
 
     void PrepareInvader(Invader invader, Vector2 border, float startingY, int index)
     {
         var updatedBorder = border;
         updatedBorder.x -= 2;
-        invader.transform.position = new Vector3((updatedBorder.x / 2) - index * (updatedBorder.x / (invaders.Count - 1)), startingY);
+        invader.transform.position = new Vector3(updatedBorder.x / 2 - index * (updatedBorder.x / (invaders.Count - 1)),
+            startingY);
         invader.SetBorders(border);
+        invader.OnDestroy += InvaderLost;
     }
 }

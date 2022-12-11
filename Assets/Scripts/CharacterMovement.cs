@@ -30,7 +30,7 @@ public class CharacterMovement : MonoBehaviour
         var nextPosition = transform.position + (Vector3)moveDirection.normalized * (speed * Time.deltaTime);
         if (nextPosition.x > borders.x / 2)
             MoveRight(false);
-        if (nextPosition.x < borders.x / 2)
+        if (nextPosition.x < -borders.x / 2)
             MoveLeft(false);
     }
 

@@ -217,8 +217,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 510057661}
-  - component: {fileID: 510057662}
   - component: {fileID: 510057663}
+  - component: {fileID: 510057664}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -243,19 +243,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &510057662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 510057659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a2babeadaadeb74ca429517e5ebca38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 2
 --- !u!114 &510057663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,6 +258,19 @@ MonoBehaviour:
   shootPosition: {fileID: 838459193}
   bulletPrefab: {fileID: 7240833641754152940, guid: 2523f1cda47cf6f4fba8daa4e13f5b32, type: 3}
   shootDirection: {x: 0, y: 1}
+--- !u!114 &510057664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510057659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b1e0e27f2c8e5a4daa05ccd4f947849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 2
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -783,8 +783,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 510057662}
-          m_TargetAssemblyTypeName: PlayerMovement, Scripts
+        - m_Target: {fileID: 510057664}
+          m_TargetAssemblyTypeName: CharacterMovement, Scripts
           m_MethodName: MoveRight
           m_Mode: 6
           m_Arguments:
@@ -799,8 +799,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 510057662}
-          m_TargetAssemblyTypeName: PlayerMovement, Scripts
+        - m_Target: {fileID: 510057664}
+          m_TargetAssemblyTypeName: CharacterMovement, Scripts
           m_MethodName: MoveRight
           m_Mode: 6
           m_Arguments:
@@ -867,8 +867,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 510057662}
-          m_TargetAssemblyTypeName: PlayerMovement, Scripts
+        - m_Target: {fileID: 510057664}
+          m_TargetAssemblyTypeName: CharacterMovement, Scripts
           m_MethodName: MoveLeft
           m_Mode: 6
           m_Arguments:
@@ -883,8 +883,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 510057662}
-          m_TargetAssemblyTypeName: PlayerMovement, Scripts
+        - m_Target: {fileID: 510057664}
+          m_TargetAssemblyTypeName: CharacterMovement, Scripts
           m_MethodName: MoveLeft
           m_Mode: 6
           m_Arguments:
