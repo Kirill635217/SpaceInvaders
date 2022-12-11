@@ -6,6 +6,7 @@ using UnityEngine;
 public class Invader : CharacterMovement
 {
     private float verticalSpeed = .3f;
+    private float baseUpdateTime = 1;
     private float updateTime = 1;
     [SerializeField] private float stepMultiplier = 0.3f;
     private float timer;
@@ -17,6 +18,7 @@ public class Invader : CharacterMovement
     public float VerticalSpeed => verticalSpeed;
     public float UpdateTime => updateTime;
 
+    private GameManager gameManager;
     public Action OnMoveDown;
     public Action<Invader> OnDestroy;
 
@@ -29,8 +31,9 @@ public class Invader : CharacterMovement
 
     private void Start()
     {
-        if (GameManager.Instance != null)
-            borders = GameManager.Instance.BorderSize;
+        gameManager = GameManager.Instance;
+        if (gameManager != null)
+            borders = gameManager.BorderSize;
         if (startMovingOnAwake)
             isMoving = true;
     }
@@ -46,6 +49,8 @@ public class Invader : CharacterMovement
         if (col.CompareTag("Bullet"))
         {
             OnDestroy?.Invoke(this);
+            if(gameManager != null)
+                gameManager.AddScore();
             Destroy(col.gameObject);
             Destroy(gameObject, 1);
             gameObject.SetActive(false);
@@ -56,6 +61,8 @@ public class Invader : CharacterMovement
     {
         if (!isMoving)
             return;
+        if (gameManager != null)
+            updateTime = baseUpdateTime * gameManager.SpeedMultiplier;
         if (timer <= 0)
         {
             Move(stepMultiplier);
@@ -72,6 +79,8 @@ public class Invader : CharacterMovement
         {
             OnMoveDown?.Invoke();
         }
+        else if (nextPosition.y < -borders.y && gameManager != null)
+            gameManager.ReachedTheBottom();
     }
 
     public void MoveDown()
@@ -104,5 +113,5 @@ public class Invader : CharacterMovement
     {
         updateTime = value;
         timer = updateTime;
-    } 
+    }
 }

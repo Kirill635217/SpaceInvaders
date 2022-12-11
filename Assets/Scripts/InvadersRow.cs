@@ -6,12 +6,12 @@ using UnityEngine;
 public class InvadersRow
 {
     private List<Invader> invaders = new();
-
     private Invader leadingRight, leadingLeft;
     public Invader LeadingRight => leadingRight;
     public Invader LeadingLeft => leadingLeft;
 
     public Action<InvadersRow, bool> OnLeaderMoveDown;
+    public Action OnInvaderLost;
 
     public InvadersRow(Invader[] givenInvaders, Vector2 border)
     {
@@ -59,6 +59,7 @@ public class InvadersRow
         Debug.Log(invaders.Contains(invader));
         if (wasLeader)
             UpdateLeaders();
+        OnInvaderLost?.Invoke();
     }
 
     public void Start()

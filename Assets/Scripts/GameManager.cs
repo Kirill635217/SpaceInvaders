@@ -1,33 +1,57 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    enum GameState
+    {
+        InProgress,
+        Ended
+    }
+
     private const string BorderTag = "Border";
 
-    [Range(0, 100)]
-    [SerializeField] private int rowCount;
-    [Range(0, 100)]
-    [SerializeField] private int enemiesPerRow;
+    private int score;
+    private float speedMultiplier = 1;
+    public float SpeedMultiplier => speedMultiplier;
+
+    #region ForUnityEditor
+
+    [Range(0, 10)] [SerializeField] private float SpeedMultiplierPerKill;
+    [Range(0, 100)] [SerializeField] private int rowCount;
+    [Range(0, 100)] [SerializeField] private int enemiesPerRow;
     [SerializeField] private int startYPosition;
-    [Range(0, 100)]
-    [SerializeField] private int spaceBetweenRows;
+    [Range(0, 100)] [SerializeField] private int spaceBetweenRows;
 
     [SerializeField] private Invader invaderPrefab;
-    
+    [SerializeField] private GameObject gameOverMenu;
+    [SerializeField] private Button restartButton;
+    [SerializeField] private TextMeshProUGUI scoreText;
+
+    #endregion
+
+    private GameState gameState = GameState.InProgress;
     private Vector2 borderSize;
     public Vector2 BorderSize => borderSize;
-    
-    private List<Invader[]> invaders = new ();
+
+    private List<Invader[]> invaders = new();
     private List<InvadersRow> rows = new();
-    
+
     public static GameManager Instance;
 
     private void Awake()
     {
         Instance = this;
+        if (gameOverMenu != null)
+            gameOverMenu.SetActive(false);
+        if (restartButton != null)
+            restartButton.onClick.AddListener(Restart);
+        UpdateUI();
         SetBorders();
     }
 
@@ -44,7 +68,6 @@ public class GameManager : MonoBehaviour
         upperBorder.name = "UpperBorder";
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         SpawnEnemies();
@@ -62,10 +85,12 @@ public class GameManager : MonoBehaviour
                 invaders[i][j] = Instantiate(invaderPrefab, Vector3.zero, Quaternion.identity, rowGO);
             }
         }
+
         foreach (var invader in invaders)
         {
             var row = new InvadersRow(invader, borderSize, startYPosition - spaceBetweenRows * rows.Count);
             row.OnLeaderMoveDown += CheckRows;
+            row.OnInvaderLost += () => speedMultiplier -= SpeedMultiplierPerKill;
             rows.Add(row);
         }
     }
@@ -75,28 +100,33 @@ public class GameManager : MonoBehaviour
         foreach (var row in rows)
         {
             row.MoveRowDown();
-            // switch (isRightLeader)
-            // {
-            //     case true:
-            //     {
-            //         var distance = Mathf.Abs(owner.LeadingRight.transform.position.x - row.LeadingRight.transform.position.x);
-            //         if(distance == 0)
-            //             row.MoveRowDown();
-            //         break;
-            //     }
-            //     case false:
-            //     {
-            //         var distance = Mathf.Abs(owner.LeadingLeft.transform.position.y - row.LeadingLeft.transform.position.y);
-            //         if(distance == 0)
-            //             row.MoveRowDown();
-            //         break;
-            //     }
-            // }
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void UpdateUI()
     {
+        if (scoreText != null)
+            scoreText.text = $"{score}";
+    }
+
+    public void AddScore()
+    {
+        score += 25;
+        UpdateUI();
+    }
+
+    public void ReachedTheBottom()
+    {
+        if (gameState == GameState.Ended)
+            return;
+        gameOverMenu.SetActive(true);
+        gameState = GameState.Ended;
+        Time.timeScale = 0;
+    }
+
+    void Restart()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Main");
     }
 }
