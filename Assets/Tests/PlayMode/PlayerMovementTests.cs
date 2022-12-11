@@ -8,32 +8,22 @@ namespace Tests.PlayMode
     public class PlayerMovementTests
     {
         [UnityTest]
-        public IEnumerator MoveRightTest()
+        public IEnumerator MovementTest()
         {
-            var playerMovement = new GameObject().AddComponent<PlayerMovement>();
+            var playerMovement = new GameObject().AddComponent<Player>();
             var expectedPosition = new Vector2(playerMovement.Speed * Time.fixedUnscaledDeltaTime, 0);
             playerMovement.MoveDirection(Vector2.right);
             playerMovement.MoveRight(true);
             yield return new WaitForSeconds(Time.fixedUnscaledDeltaTime);
             Assert.AreEqual(true, Vector2.Distance(expectedPosition, playerMovement.transform.position) < .1f);
         }
-    
+        
         [UnityTest]
-        public IEnumerator MoveLeftTest()
+        public IEnumerator BordersLogicTest()
         {
-            var playerMovement = new GameObject().AddComponent<PlayerMovement>();
-            var expectedPosition = new Vector2(-playerMovement.Speed * Time.fixedUnscaledDeltaTime, 0);
-            playerMovement.MoveDirection(Vector2.left);
-            playerMovement.MoveLeft(true);
-            yield return new WaitForSeconds(Time.fixedUnscaledDeltaTime);
-            Assert.AreEqual(true, Vector2.Distance(expectedPosition, playerMovement.transform.position) < .1f);
-        }
-    
-        [UnityTest]
-        public IEnumerator MoveRightAndLeftTest()
-        {
-            var playerMovement = new GameObject().AddComponent<PlayerMovement>();
+            var playerMovement = new GameObject().AddComponent<Player>();
             var expectedPosition = new Vector2(0, 0);
+            playerMovement.SetBorders(Vector2.zero);
             playerMovement.MoveDirection(Vector2.left);
             playerMovement.MoveDirection(Vector2.right);
             playerMovement.MoveLeft(true);

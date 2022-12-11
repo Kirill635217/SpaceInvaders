@@ -35,7 +35,7 @@ namespace Tests.PlayMode
             Debug.Log(expectedPosition);
             Assert.AreEqual(true,
                 Mathf.Abs(Vector2.Distance(expectedPosition,
-                    Object.FindObjectOfType<Bullet>().transform.position)) < .01f);
+                    Object.FindObjectOfType<Bullet>().transform.position)) < .05f);
         }
     }
 }
