@@ -30,9 +30,6 @@ namespace Tests.PlayMode
             var expectedPosition = new Vector2(0,
                 playerCannon.Force * playerCannon.FireRate / 2);
             yield return new WaitForSeconds(playerCannon.FireRate / 2);
-            Debug.Log(Object.FindObjectsOfType<Bullet>().Length);
-            Debug.Log(Object.FindObjectOfType<Bullet>().transform.position);
-            Debug.Log(expectedPosition);
             Assert.AreEqual(true,
                 Mathf.Abs(Vector2.Distance(expectedPosition,
                     Object.FindObjectOfType<Bullet>().transform.position)) < .05f);

@@ -22,6 +22,8 @@ public class Invader : CharacterMovement
     private void Awake()
     {
         MoveDirection(Vector2.right);
+        timer = updateTime;
+        moveRight = true;
     }
 
     private void Start()
@@ -34,6 +36,7 @@ public class Invader : CharacterMovement
 
     private void Update()
     {
+        CheckMoveDirection();
         CheckTimer();
     }
 
@@ -53,42 +56,41 @@ public class Invader : CharacterMovement
     protected override void CheckMoveDirection()
     {
         var nextPosition = transform.position + (Vector3)moveDirection.normalized * (speed * stepMultiplier);
-        if ((nextPosition.x > borders.x / 2 || nextPosition.x < -borders.x / 2) && nextPosition.y > -borders.y / 2)
+        if ((nextPosition.x > borders.x / 2 || nextPosition.x < -borders.x / 2) && nextPosition.y > -borders.y)
         {
-            Teleport(transform.position + Vector3.down * verticalSpeed);
             OnMoveDown?.Invoke();
-            if (nextPosition.x > borders.x / 2)
-            {
-                MoveRight(false);
-                MoveLeft(true);
-            }
-
-            if (nextPosition.x < -borders.x / 2)
-            {
-                MoveLeft(false);
-                MoveRight(true);
-            }
         }
     }
 
     public void MoveDown()
     {
-        Teleport(transform.position + Vector3.down * verticalSpeed);
         if (moveRight)
         {
-            MoveRight(false);
-            MoveLeft(true);
+            moveRight = false;
+            moveLeft = true;
+            moveDirection = Vector2.left;
+            Teleport(transform.position + Vector3.down * verticalSpeed);
+            Move(stepMultiplier);
+            timer = updateTime;
             return;
         }
 
         if (moveLeft)
         {
-            MoveLeft(false);
-            MoveRight(true);
+            moveRight = true;
+            moveLeft = false;
+            moveDirection = Vector2.right;
+            Teleport(transform.position + Vector3.down * verticalSpeed);
+            Move(stepMultiplier);
+            timer = updateTime;
         }
     }
 
     public void StartMoving() => isMoving = true;
 
-    public void SetUpdateTime(float value) => updateTime = value;
+    public void SetUpdateTime(float value)
+    {
+        updateTime = value;
+        timer = updateTime;
+    } 
 }
